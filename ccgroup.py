@@ -106,29 +106,29 @@ class CCGroupWidget(QWidget):
         if file_to_load:
             self.file_loaded = file_to_load
 
-        self.current_file_data = bytearray()
-        for card_widget in self.__card_widget_list:
-            card_widget.setParent(None)
-            card_widget.deleteLater()
-        self.__card_widget_list = []
-        with open(self.file_loaded, "rb") as in_file:
-            while el := in_file.read(1):
-                self.current_file_data.extend(el)
+            self.current_file_data = bytearray()
+            for card_widget in self.__card_widget_list:
+                card_widget.setParent(None)
+                card_widget.deleteLater()
+            self.__card_widget_list = []
+            with open(self.file_loaded, "rb") as in_file:
+                while el := in_file.read(1):
+                    self.current_file_data.extend(el)
 
-        menu_offset = self.game_data.card_data_json["card_data_offset"]["eng_menu"]
-        menu_offset += self.__get_lang_offset()
-        list_card = []
-        id = 0
-        for card_data_index in range(menu_offset, menu_offset + self.NB_CARD * self.CARD_DATA_SIZE, self.CARD_DATA_SIZE):
-            new_card = Card(game_data=self.game_data, id=id, offset=menu_offset + card_data_index * self.CARD_DATA_SIZE,
-                            data_hex=self.current_file_data[card_data_index: card_data_index + self.CARD_DATA_SIZE],
-                            remaster=self.__remaster_widget.isChecked(), card_size=self.__size_slider_widget.value())
-            list_card.append(new_card)
-            id += 1
+            menu_offset = self.game_data.card_data_json["card_data_offset"]["eng_menu"]
+            menu_offset += self.__get_lang_offset()
+            list_card = []
+            id = 0
+            for card_data_index in range(menu_offset, menu_offset + self.NB_CARD * self.CARD_DATA_SIZE, self.CARD_DATA_SIZE):
+                new_card = Card(game_data=self.game_data, id=id, offset=menu_offset + card_data_index * self.CARD_DATA_SIZE,
+                                data_hex=self.current_file_data[card_data_index: card_data_index + self.CARD_DATA_SIZE],
+                                remaster=self.__remaster_widget.isChecked(), card_size=self.__size_slider_widget.value())
+                list_card.append(new_card)
+                id += 1
 
-        for card in list_card:
-            self.__card_widget_list.append(CardWidget(card))
-            self.__layout_main.addWidget(self.__card_widget_list[-1])
+            for card in list_card:
+                self.__card_widget_list.append(CardWidget(card))
+                self.__layout_main.addWidget(self.__card_widget_list[-1])
 
     def __save_file(self):
         default_file_name = os.path.join(os.getcwd(), "monster_card_injection_" + self.__language_widget.currentText() + ".hext")
