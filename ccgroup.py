@@ -1,8 +1,8 @@
 import os
 
-from PyQt6.QtCore import QSize
+from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QIcon
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QScrollArea, QFileDialog, QPushButton, QHBoxLayout, QLabel, QComboBox, QCheckBox
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QScrollArea, QFileDialog, QPushButton, QHBoxLayout, QLabel, QComboBox, QCheckBox, QSlider, QSpinBox
 
 from card import Card
 from cardwidget import CardWidget
@@ -29,7 +29,7 @@ class CCGroupWidget(QWidget):
         self.__layout_main = QVBoxLayout()
         self.scroll_widget.setLayout(self.__layout_main)
         self.setWindowTitle("CC Group")
-        self.setMinimumSize(400, 500)
+        self.setMinimumSize(500, 500)
         self.setWindowIcon(QIcon(os.path.join(icon_path, 'icon.ico')))
 
         self.__file_dialog = QFileDialog()
@@ -60,13 +60,28 @@ class CCGroupWidget(QWidget):
 
         self.__remaster_widget = QCheckBox("Remaster cards")
         self.__remaster_widget.setChecked(False)
-        self.__remaster_widget.toggled.connect(self.__change_remaster)
+        self.__remaster_widget.toggled.connect(self.__change_card_image)
+        self.__remaster_widget.setToolTip("Change the card to MCindus one")
+
+        self.__size_slider_label = QLabel("Card size:")
+        self.__size_slider_label.setToolTip("Change card size (Min:64, Max:256)")
+        self.__size_slider_widget = QSpinBox()
+        self.__size_slider_widget.setMaximum(256)
+        self.__size_slider_widget.setMinimum(64)
+        self.__size_slider_widget.setValue(128)
+        self.__size_slider_widget.setToolTip("Change card size (Min:64, Max:256)")
+        self.__size_slider_widget.valueChanged.connect(self.__change_card_image)
+        self.__size_slider_widget.wheelEvent = lambda event: None
+        self.__size_card_layout = QHBoxLayout()
+        self.__size_card_layout.addWidget(self.__size_slider_label)
+        self.__size_card_layout.addWidget(self.__size_slider_widget)
 
         self.__layout_top = QHBoxLayout()
         self.__layout_top.addWidget(self.__file_dialog_button)
         self.__layout_top.addWidget(self.__save_button)
         self.__layout_top.addLayout(self.__language_layout)
         self.__layout_top.addWidget(self.__remaster_widget)
+        self.__layout_top.addLayout(self.__size_card_layout)
         self.__layout_top.addStretch(1)
 
         self.current_file_data = bytearray()
@@ -79,13 +94,12 @@ class CCGroupWidget(QWidget):
         self.__layout_main.addStretch(1)
         self.__card_widget_list = []
 
-    def __change_remaster(self):
+    def __change_card_image(self):
         for card_widget in self.__card_widget_list:
-            card_widget.change_remaster(self.__remaster_widget.isChecked())
+            card_widget.change_card_image(self.__remaster_widget.isChecked(), self.__size_slider_widget.value())
 
     def __load_file(self, file_to_load: str = ""):
         # file_to_load = os.path.join("OriginalFiles", "FF8_EN.exe")  # For developing faster
-        print(f"File to load: {file_to_load}")
         if not file_to_load:
             file_to_load = self.__file_dialog.getOpenFileName(parent=self, caption="Find FF8 exe", filter="*.exe",
                                                               directory=os.getcwd())[0]
@@ -108,10 +122,9 @@ class CCGroupWidget(QWidget):
         for card_data_index in range(menu_offset, menu_offset + self.NB_CARD * self.CARD_DATA_SIZE, self.CARD_DATA_SIZE):
             new_card = Card(game_data=self.game_data, id=id, offset=menu_offset + card_data_index * self.CARD_DATA_SIZE,
                             data_hex=self.current_file_data[card_data_index: card_data_index + self.CARD_DATA_SIZE],
-                            remaster=self.__remaster_widget.isChecked())
+                            remaster=self.__remaster_widget.isChecked(), card_size=self.__size_slider_widget.value())
             list_card.append(new_card)
             id += 1
-
 
         for card in list_card:
             self.__card_widget_list.append(CardWidget(card))
