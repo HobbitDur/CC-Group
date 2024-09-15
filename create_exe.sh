@@ -1,0 +1,10 @@
+.venv/Scripts/pyinstaller.exe -n CC-Group -F --specpath release/build --distpath release --workpath release/build --onefile --noconsole --icon=../../Resources/icon.ico main.py;
+mkdir -p release/CC-Group-x.x;
+cp -R Resources release/CC-Group-x.x/;
+cp release/*.exe release/CC-Group-x.x/;
+cd release/CC-Group-x.x;
+"C:\Program Files\7-Zip\7z.exe" a -tzip ../CC-Group-x.x.zip .;
+cd ..;
+rm -r CC-Group-x.x;
+rm -r build;
+rm *.exe;

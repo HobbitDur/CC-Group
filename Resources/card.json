@@ -1,14 +1,19 @@
 {
+  "card_data_offset":{
+    "eng_menu": "0x796508",
+    "eng_game_data": "0x874D00",
+    "fr_offset": "+0x168"},
+
   "card_type": [
-    {"id":  0, "name":  "None"},
-    {"id":  1, "name":  "Fire"},
-    {"id":  2, "name":  "Ice"},
-    {"id":  4, "name":  "Thunder"},
-    {"id":  8, "name":  "Earth"},
-    {"id":  16, "name":  "Bio"},
-    {"id":  32, "name":  "Wind"},
-    {"id":  64, "name":  "Water"},
-    {"id":  128, "name":  "Holy"}
+    {"id":  0, "name": "None",   "img_x": 11, "img_y": 0},
+    {"id":  1, "name": "Fire",   "img_x": 1, "img_y": 1},
+    {"id":  2, "name": "Ice",    "img_x": 4, "img_y": 1},
+    {"id":  4, "name": "Thunder","img_x": 8, "img_y": 1},
+    {"id":  8, "name": "Earth",  "img_x": 12, "img_y": 1},
+    {"id": 16, "name": "Bio",    "img_x": 0, "img_y": 2},
+    {"id": 32, "name": "Wind",   "img_x": 4, "img_y": 2},
+    {"id": 64, "name": "Water",  "img_x": 8, "img_y": 2},
+    {"id":128, "name": "Holy",   "img_x": 12, "img_y": 2}
   ],
   "card_info": [
     {"id":  0, "img_x":0, "img_y": 0, "name": "Geezard", "type_int": 0 },

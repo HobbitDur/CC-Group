@@ -1,6 +1,10 @@
 import json
 import os
 
+from PIL import Image
+from PIL.ImageQt import ImageQt
+from PyQt6.QtGui import QPixmap
+
 
 class GameData():
     RESOURCE_FOLDER = "Resources"
@@ -30,6 +34,7 @@ class GameData():
         self.monster_values = {}
         self.kernel_data_json = []
         self.card_data_json = []
+        self.card_image_list = []
         self.__init_hex_to_str_table()
 
     def __init_hex_to_str_table(self):
@@ -43,7 +48,6 @@ class GameData():
                 self.translate_hex_to_str_table[i] = self.translate_hex_to_str_table[i].replace(';;;', ',')
                 if self.translate_hex_to_str_table[i].count('"') == 2:
                     self.translate_hex_to_str_table[i] = self.translate_hex_to_str_table[i].replace('"', '')
-
 
     def load_kernel_data(self, file_path):
         with open(file_path, encoding="utf8") as f:
@@ -60,6 +64,52 @@ class GameData():
     def load_card_json_data(self, file_path):
         with open(file_path, encoding="utf8") as f:
             self.card_data_json = json.load(f)
+        for key in self.card_data_json["card_data_offset"]:
+            self.card_data_json["card_data_offset"][key] = int(self.card_data_json["card_data_offset"][key], 16)
+
+
+        # Thank you Maki !
+        img = Image.open(os.path.join("Resources", "text_0.png"))
+        TILES_WIDTH_EL = 128
+        TILES_HEIGHT_EL = 128
+        for i, list_el in enumerate(self.card_data_json["card_type"]):
+            # Calculate the bounding box of the tile
+            left = list_el["img_x"] * TILES_WIDTH_EL
+            upper = list_el["img_y"] * TILES_HEIGHT_EL
+            right = left + TILES_WIDTH_EL
+            lower = upper + TILES_HEIGHT_EL
+            # Extract the tile using cropping
+            tile = img.crop((left, upper, right, lower))
+            self.card_data_json["card_type"][i]["img"] = QPixmap.fromImage(ImageQt(tile))
+
+        img = Image.open(os.path.join("Resources", "cards_00.png"))
+        img_remaster = Image.open(os.path.join("Resources", "cards_00_remaster.png"))
+
+        TILES_WIDTH = 64
+        TILES_HEIGHT = 64
+        for i, list_el in enumerate(self.card_data_json["card_info"]):
+            # Calculate the bounding box of the tile
+            left = list_el["img_x"] * TILES_WIDTH
+            upper = list_el["img_y"] * TILES_HEIGHT
+            right = left + TILES_WIDTH
+            lower = upper + TILES_HEIGHT
+            # Extract the tile using cropping
+            tile = img.crop((left, upper, right, lower))
+            self.card_data_json["card_info"][i]["img"] = QPixmap.fromImage(ImageQt(tile))
+
+        TILES_WIDTH = 256
+        TILES_HEIGHT = 256
+        for i, list_el in enumerate(self.card_data_json["card_info"]):
+            # Calculate the bounding box of the tile
+            left = list_el["img_x"] * TILES_WIDTH
+            upper = list_el["img_y"] * TILES_HEIGHT
+            right = left + TILES_WIDTH
+            lower = upper + TILES_HEIGHT
+            # Extract the tile using cropping
+            tile_remaster = img_remaster.crop((left, upper, right, lower))
+            qpix = QPixmap.fromImage(ImageQt(tile_remaster))
+            qpix = qpix.scaled(64,64)
+            self.card_data_json["card_info"][i]["img_remaster"] =qpix
 
     def translate_str_to_hex(self, string):
         c = 0
