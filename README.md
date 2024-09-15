@@ -11,5 +11,9 @@ Also, for the moment I only have 2 offset: English and French one. Choose the co
 
 To use it, you need then to put your file to the hext folder. For example in FFNx it's in \FINAL FANTASY VIII\hext\ff8\en_nv if you play in english on the 2013 version.
 
+Special thanks to @myst6re for finding the location of those data.
+
 ![image](https://github.com/user-attachments/assets/857d7f66-d668-449a-a937-4005cb209dd0)
+
+
 
