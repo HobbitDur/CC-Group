@@ -19,24 +19,24 @@ class CardWidget(QWidget):
         self.setLayout(self.__main_layout)
 
         self.__left_value_widget = QSpinBox()
+        self.__left_value_widget.setMaximum(10)
         self.__left_value_widget.setValue(self.card.left_value)
         self.__left_value_widget.wheelEvent = lambda event: None
-        self.__left_value_widget.setMaximum(10)
         self.__left_value_widget.valueChanged.connect(self.__left_changed)
         self.__right_value_widget = QSpinBox()
+        self.__right_value_widget.setMaximum(10)
         self.__right_value_widget.setValue(self.card.right_value)
         self.__right_value_widget.wheelEvent = lambda event: None
-        self.__right_value_widget.setMaximum(10)
         self.__right_value_widget.valueChanged.connect(self.__right_changed)
         self.__down_value_widget = QSpinBox()
+        self.__down_value_widget.setMaximum(10)
         self.__down_value_widget.setValue(self.card.down_value)
         self.__down_value_widget.wheelEvent = lambda event: None
-        self.__down_value_widget.setMaximum(10)
         self.__down_value_widget.valueChanged.connect(self.__down_changed)
         self.__top_value_widget = QSpinBox()
+        self.__top_value_widget.setMaximum(10)
         self.__top_value_widget.setValue(self.card.top_value)
         self.__top_value_widget.wheelEvent = lambda event: None
-        self.__top_value_widget.setMaximum(10)
         self.__top_value_widget.valueChanged.connect(self.__top_changed)
 
         self.__card_image_location_drawer = QLabel()
@@ -47,9 +47,9 @@ class CardWidget(QWidget):
         self.__power_label_widget = QLabel("Power")
         self.__power_label_widget.setToolTip("When lose, pnj take the card with higher level")
         self.__power_value_widget = QSpinBox()
+        self.__power_value_widget.setMaximum(255)
         self.__power_value_widget.setValue(self.card.power_value)
         self.__power_value_widget.wheelEvent = lambda event: None
-        self.__power_value_widget.setMaximum(255)
         self.__power_value_widget.valueChanged.connect(self.__power_changed)
 
         self.__elemental_label_widget = QLabel("Elemental: ")

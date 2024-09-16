@@ -112,6 +112,7 @@ class CCGroupWidget(QWidget):
             list_card.append(new_card)
             id += 1
 
+
         for card in list_card:
             self.__card_widget_list.append(CardWidget(card))
             self.__layout_main.addWidget(self.__card_widget_list[-1])
