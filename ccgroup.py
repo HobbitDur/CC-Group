@@ -86,7 +86,7 @@ class CCGroupWidget(QWidget):
 
         self.current_file_data = bytearray()
         self.game_data = GameData()
-        self.game_data.load_card_json_data(os.path.join("Resources", "card.json"))
+        self.game_data.load_card_json_data()
 
         self.__layout_main.addLayout(self.__layout_top)
         self.__layout_main.addStretch(1)
