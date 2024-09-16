@@ -85,7 +85,7 @@ class CCGroupWidget(QWidget):
         self.__layout_top.addStretch(1)
 
         self.current_file_data = bytearray()
-        self.game_data = GameData()
+        self.game_data = GameData("FF8GameData")
         self.game_data.load_card_json_data()
 
         self.__layout_main.addLayout(self.__layout_top)
