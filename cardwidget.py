@@ -55,7 +55,7 @@ class CardWidget(QWidget):
         self.__elemental_label_widget = QLabel("Elemental: ")
         self.__elemental_widget = QComboBox()
         for el in self.card.game_data.card_data_json["card_type"]:
-            self.__elemental_widget.addItem(QIcon(el["img"]), el["name"])
+            self.__elemental_widget.addItem(QIcon(QPixmap.fromImage(ImageQt(el["img"]))), el["name"])
         self.__elemental_widget.wheelEvent = lambda event: None
         self.__elemental_widget.currentIndexChanged.connect(self.__elemental_changed)
 

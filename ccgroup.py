@@ -6,7 +6,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QScrollArea, QFileDialog, QPus
 
 from card import Card
 from cardwidget import CardWidget
-from gamedata import GameData
+from FF8GameData.gamedata import GameData
 
 
 class CCGroupWidget(QWidget):

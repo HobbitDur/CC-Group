@@ -3,8 +3,9 @@ import os
 from PIL.ImageQt import ImageQt
 from PyQt6.QtGui import QPixmap
 
-from gamedata import GameData
 from PIL import Image
+
+from FF8GameData.gamedata import GameData
 
 
 class Card():
