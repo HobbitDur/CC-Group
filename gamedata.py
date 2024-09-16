@@ -66,8 +66,9 @@ class GameData():
             self.card_data_json = json.load(f)
         for key in self.card_data_json["card_data_offset"]:
             self.card_data_json["card_data_offset"][key] = int(self.card_data_json["card_data_offset"][key], 16)
+        self.load_cards()
 
-
+    def load_cards(self):
         # Thank you Maki !
         img = Image.open(os.path.join("Resources", "text_0.png"))
         TILES_WIDTH_EL = 128
@@ -95,7 +96,7 @@ class GameData():
             lower = upper + TILES_HEIGHT
             # Extract the tile using cropping
             tile = img.crop((left, upper, right, lower))
-            self.card_data_json["card_info"][i]["img"] = QPixmap.fromImage(ImageQt(tile))
+            self.card_data_json["card_info"][i]["img"] = tile
 
         TILES_WIDTH = 256
         TILES_HEIGHT = 256
@@ -107,9 +108,7 @@ class GameData():
             lower = upper + TILES_HEIGHT
             # Extract the tile using cropping
             tile_remaster = img_remaster.crop((left, upper, right, lower))
-            qpix = QPixmap.fromImage(ImageQt(tile_remaster))
-            qpix = qpix.scaled(64,64)
-            self.card_data_json["card_info"][i]["img_remaster"] =qpix
+            self.card_data_json["card_info"][i]["img_remaster"] =tile_remaster
 
     def translate_str_to_hex(self, string):
         c = 0

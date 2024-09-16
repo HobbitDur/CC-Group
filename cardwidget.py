@@ -98,8 +98,8 @@ class CardWidget(QWidget):
         self.__text_layout.addLayout(self.__element_layout)
         self.__text_layout.addStretch(1)
 
-    def change_remaster(self, remaster):
-        self.card.change_remaster_image(remaster)
+    def change_card_image(self, remaster, size):
+        self.card.change_card_image(remaster, size)
         self.__card_image_location_drawer.setPixmap(self.card.get_image())
 
     def __top_changed(self):
