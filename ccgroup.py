@@ -110,7 +110,7 @@ class CCGroupWidget(QWidget):
         self.__size_slider_widget.setEnabled(False)
 
 
-        file_to_load = os.path.join("OriginalFiles", "FF8_EN.exe")  # For developing faster
+        #file_to_load = os.path.join("OriginalFiles", "FF8_EN.exe")  # For developing faster
         if not file_to_load:
             file_to_load = self.__file_dialog.getOpenFileName(parent=self, caption="Find FF8 exe", filter="*.exe",
                                                               directory=os.getcwd())[0]
