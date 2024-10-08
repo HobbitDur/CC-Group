@@ -45,7 +45,7 @@ class CardWidget(QWidget):
         self.__name_label_widget = QLabel("Name: " + self.card.get_name())
 
         self.__power_label_widget = QLabel("Power")
-        self.__power_label_widget.setToolTip("When lose, pnj take the card with higher level")
+        self.__power_label_widget.setToolTip("When game is lost, the PNJ take the card with the highest level")
         self.__power_value_widget = QSpinBox()
         self.__power_value_widget.setMaximum(255)
         self.__power_value_widget.setValue(self.card.power_value)
@@ -98,9 +98,11 @@ class CardWidget(QWidget):
         self.__text_layout.addLayout(self.__element_layout)
         self.__text_layout.addStretch(1)
 
-    def change_card_image(self, remaster, size):
-        self.card.change_card_image(remaster, size)
+    def change_card_mod(self, mod:int, size):
+        self.card.change_card_mod(mod, size)
         self.__card_image_location_drawer.setPixmap(self.card.get_image())
+        print(f"self card name: {self.card.get_name()}")
+        self.__name_label_widget.setText("Name: " + self.card.get_name())
 
     def __top_changed(self):
         self.card.top_value = self.__top_value_widget.value()

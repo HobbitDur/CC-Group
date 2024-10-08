@@ -11,9 +11,9 @@ from FF8GameData.gamedata import GameData
 
 class CCGroupWidget(QWidget):
     CARD_DATA_SIZE = 8
-    NB_CARD = 109
     GENERAL_OFFSET = 0x400000
     LANG_LIST = ["en", "fr"]
+    MOD_LIST = ["Original", "Tripod (Mcindus)", "Xylomod (ducladoncladon)"]
 
     def __init__(self, icon_path='Resources'):
         QWidget.__init__(self)
@@ -58,10 +58,15 @@ class CCGroupWidget(QWidget):
         self.__language_layout.addWidget(self.__language_widget)
         self.__language_layout.wheelEvent = lambda event: None
 
-        self.__remaster_widget = QCheckBox("Remaster cards")
-        self.__remaster_widget.setChecked(False)
-        self.__remaster_widget.toggled.connect(self.__change_card_image)
-        self.__remaster_widget.setToolTip("Change the card to MCindus one")
+        self.__mod_label_widget = QLabel("Remaster cards")
+        self.__mod_widget = QComboBox(parent=self)
+        self.__mod_widget.addItems(self.MOD_LIST)
+        self.__mod_widget.currentIndexChanged.connect(self.__change_card_image)
+        self.__mod_widget.setToolTip("Change the design of the card")
+        self.__mod_widget.wheelEvent = lambda event: None
+        self.__mod_layout = QHBoxLayout()
+        self.__mod_layout.addWidget(self.__mod_label_widget)
+        self.__mod_layout.addWidget(self.__mod_widget)
 
         self.__size_slider_label = QLabel("Card size:")
         self.__size_slider_label.setToolTip("Change card size (Min:64, Max:256)")
@@ -80,24 +85,32 @@ class CCGroupWidget(QWidget):
         self.__layout_top.addWidget(self.__file_dialog_button)
         self.__layout_top.addWidget(self.__save_button)
         self.__layout_top.addLayout(self.__language_layout)
-        self.__layout_top.addWidget(self.__remaster_widget)
+        self.__layout_top.addWidget(self.__mod_widget)
         self.__layout_top.addLayout(self.__size_card_layout)
         self.__layout_top.addStretch(1)
 
         self.current_file_data = bytearray()
         self.game_data = GameData("FF8GameData")
-        self.game_data.load_card_json_data()
+        self.game_data.load_card_data()
 
         self.__layout_main.addLayout(self.__layout_top)
         self.__layout_main.addStretch(1)
         self.__card_widget_list = []
+        self.__nb_card = len(self.game_data.card_data_json["card_info"])
 
     def __change_card_image(self):
         for card_widget in self.__card_widget_list:
-            card_widget.change_card_image(self.__remaster_widget.isChecked(), self.__size_slider_widget.value())
+            card_widget.change_card_mod(self.__mod_widget.currentIndex(), self.__size_slider_widget.value())
 
     def __load_file(self, file_to_load: str = ""):
-        # file_to_load = os.path.join("OriginalFiles", "FF8_EN.exe")  # For developing faster
+        self.__file_dialog_button.setEnabled(False)
+        self.__save_button.setEnabled(False)
+        self.__language_widget.setEnabled(False)
+        self.__mod_widget.setEnabled(False)
+        self.__size_slider_widget.setEnabled(False)
+
+
+        file_to_load = os.path.join("OriginalFiles", "FF8_EN.exe")  # For developing faster
         if not file_to_load:
             file_to_load = self.__file_dialog.getOpenFileName(parent=self, caption="Find FF8 exe", filter="*.exe",
                                                               directory=os.getcwd())[0]
@@ -117,16 +130,22 @@ class CCGroupWidget(QWidget):
             menu_offset += self.__get_lang_offset()
             list_card = []
             id = 0
-            for card_data_index in range(menu_offset, menu_offset + self.NB_CARD * self.CARD_DATA_SIZE, self.CARD_DATA_SIZE):
+            for card_data_index in range(menu_offset, menu_offset + self.__nb_card * self.CARD_DATA_SIZE, self.CARD_DATA_SIZE):
                 new_card = Card(game_data=self.game_data, id=id, offset=menu_offset + card_data_index * self.CARD_DATA_SIZE,
                                 data_hex=self.current_file_data[card_data_index: card_data_index + self.CARD_DATA_SIZE],
-                                remaster=self.__remaster_widget.isChecked(), card_size=self.__size_slider_widget.value())
+                                mod=self.__mod_widget.currentIndex(), card_size=self.__size_slider_widget.value())
                 list_card.append(new_card)
                 id += 1
 
             for card in list_card:
                 self.__card_widget_list.append(CardWidget(card))
                 self.__layout_main.addWidget(self.__card_widget_list[-1])
+
+        self.__file_dialog_button.setEnabled(True)
+        self.__save_button.setEnabled(True)
+        self.__language_widget.setEnabled(True)
+        self.__mod_widget.setEnabled(True)
+        self.__size_slider_widget.setEnabled(True)
 
     def __save_file(self):
         default_file_name = os.path.join(os.getcwd(), "monster_card_injection_" + self.__language_widget.currentText() + ".hext")
