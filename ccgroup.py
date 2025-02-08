@@ -92,11 +92,12 @@ class CCGroupWidget(QWidget):
         self.current_file_data = bytearray()
         self.game_data = GameData("FF8GameData")
         self.game_data.load_card_data()
+        self.game_data.load_exe_data()
 
         self.__layout_main.addLayout(self.__layout_top)
         self.__layout_main.addStretch(1)
         self.__card_widget_list = []
-        self.__nb_card = len(self.game_data.card_data_json["card_info"])
+        self.__nb_card = len(self.game_data.card_data_json["card_info"]) - 1 # -1 for the immune
 
     def __change_card_image(self):
         for card_widget in self.__card_widget_list:
@@ -126,7 +127,7 @@ class CCGroupWidget(QWidget):
                 while el := in_file.read(1):
                     self.current_file_data.extend(el)
 
-            menu_offset = self.game_data.card_data_json["card_data_offset"]["eng_menu"]
+            menu_offset = self.game_data.exe_data_json["card_data_offset"]["eng_menu"]
             menu_offset += self.__get_lang_offset()
             list_card = []
             id = 0
@@ -159,10 +160,10 @@ class CCGroupWidget(QWidget):
         hext_str += "#Offset to dynamic data\n"
         hext_str += "+{:X}\n\n".format(self.GENERAL_OFFSET)
 
-        menu_offset = self.game_data.card_data_json["card_data_offset"]["eng_menu"]
+        menu_offset = self.game_data.exe_data_json["card_data_offset"]["eng_menu"]
         menu_offset += self.__get_lang_offset()
 
-        game_offset = self.game_data.card_data_json["card_data_offset"]["eng_game_data"]
+        game_offset = self.game_data.exe_data_json["card_data_offset"]["eng_game_data"]
         game_offset += self.__get_lang_offset()
 
         # Now adding the card data for the menu
@@ -207,7 +208,7 @@ class CCGroupWidget(QWidget):
     def __get_lang_offset(self):
         offset_lang = 0
         if self.__language_widget.currentText() != "en":
-            offset_lang = [self.game_data.card_data_json["card_data_offset"][x] for x in self.game_data.card_data_json["card_data_offset"].keys() if
+            offset_lang = [self.game_data.exe_data_json["card_data_offset"][x] for x in self.game_data.exe_data_json["card_data_offset"].keys() if
                            x == self.__language_widget.currentText() + '_offset']
             if offset_lang:
                 offset_lang = offset_lang[self.__language_widget.currentText() + '_offset']
